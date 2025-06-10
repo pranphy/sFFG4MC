@@ -30,9 +30,9 @@
 #include "G4ProcessManager.hh"
 #include "G4IonFluctuations.hh"
 #include "G4IonParametrisedLossModel.hh"
-#include "G4EmProcessOptions.hh"
+//#include "G4EmProcessOptions.hh"
 
-#include "G4PhotoNuclearProcess.hh"
+//#include "G4PhotoNuclearProcess.hh"
 #include "G4CascadeInterface.hh"
 
 #include "G4HadronElasticProcess.hh"
@@ -41,13 +41,13 @@
 #include "G4NeutronHPElastic.hh"
 #include "G4NeutronHPThermalScattering.hh"
 
-#include "G4NeutronInelasticProcess.hh"
+//#include "G4NeutronInelasticProcess.hh"
 #include "G4NeutronHPInelasticData.hh"
 #include "G4NeutronHPInelastic.hh"
 
-#include "G4HadronCaptureProcess.hh"
-#include "G4NeutronHPCaptureData.hh"
-#include "G4NeutronHPCapture.hh"
+//#include "G4HadronCaptureProcess.hh"
+//#include "G4NeutronHPCaptureData.hh"
+//#include "G4NeutronHPCapture.hh"
 
 
 //---------------------------------------------------------------------------
@@ -241,14 +241,14 @@ void PhysicsList::SetCutForPositron(G4double cut)
 
 //---------------------------------------------------------------------------
 
-void PhysicsList::ConstructPhotoNuclear()
-{
-  G4ProcessManager* pManager = G4Gamma::Gamma()->GetProcessManager();
-  G4PhotoNuclearProcess* process = new G4PhotoNuclearProcess();
-  G4CascadeInterface* bertini = new G4CascadeInterface();
-  bertini->SetMaxEnergy(10*GeV);
-  process->RegisterMe(bertini);
-  pManager->AddDiscreteProcess(process);
-}
+//void PhysicsList::ConstructPhotoNuclear()
+//{
+//  G4ProcessManager* pManager = G4Gamma::Gamma()->GetProcessManager();
+//  G4PhotoNuclearProcess* process = new G4PhotoNuclearProcess();
+//  G4CascadeInterface* bertini = new G4CascadeInterface();
+//  bertini->SetMaxEnergy(10*GeV);
+//  process->RegisterMe(bertini);
+//  pManager->AddDiscreteProcess(process);
+//}
 
 //---------------------------------------------------------------------------

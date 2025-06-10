@@ -26,7 +26,7 @@ public:
   void ConstructProcess();
 
   void AddPackage(const G4String& name);
-  void ConstructPhotoNuclear();
+  //void ConstructPhotoNuclear();
 
 private:
 
