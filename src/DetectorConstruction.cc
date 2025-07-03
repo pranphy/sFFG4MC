@@ -357,8 +357,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   hodoscint_log->SetVisAttributes(G4Colour::Green());
   HCALshield_log->SetVisAttributes(G4Colour::Cyan());
 
-  //feabs_log->SetVisAttributes(G4VisAttributes::Invisible);
-  //fexpHall_log->SetVisAttributes(G4VisAttributes::Invisible);
+  fexpHall_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+  feabs_log->SetVisAttributes(G4VisAttributes::GetInvisible());
 
   //---------------------------------------------------------------------------
 
@@ -1138,7 +1138,7 @@ void DetectorConstruction::BuildTarget()
   
   new G4PVPlacement(xChambRot, G4ThreeVector(), LogicInnerChamber, "ChamberInner_pos", fexpHall_log, false, 0 );
 
-  //LogicInnerChamber->SetVisAttributes(G4VisAttributes::Invisible);
+  LogicInnerChamber->SetVisAttributes(G4VisAttributes::GetInvisible());
 
   //---------------------------------------------------------------------------
   
