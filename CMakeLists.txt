@@ -1,59 +1,24 @@
-#cmake_minimum_required(VERSION 2.8)
-#add_executable(SBS SBS.cc)
-#target_link_libraries(SBS ${Geant4_LIBRARIES})
-#----------------------------------------------------------------------------
-# Setup the project
-#
-cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
-project(sFFG4MC)
+cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
+project(sFFG4MC LANGUAGES CXX)
 
-find_package(Geant4 REQUIRED)
-find_package(ROOT 6.32 REQUIRED)
+find_package(Geant4 CONFIG REQUIRED ui_all vis_all )
+find_package(ROOT CONFIG REQUIRED COMPONENTS RIO Tree Core )
 
-#include_directories(${Geant4_INCLUDE_DIRS} ${INC_ROOT})
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF) # Prefer standard C++
 
-add_definitions(${Geant4_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS ${Geant4_CXX_FLAGS})
+file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cc")
 
-#----------------------------------------------------------------------------
-# Find Geant4 package, activating all available UI and Vis drivers by default
-# You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
-# to build a batch mode only executable
-#
-option(GEANT4_INSTALL_DATA "Data" ON)
-option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
-if(WITH_GEANT4_UIVIS)
-  find_package(Geant4 REQUIRED ui_all vis_all)
-else()
-  find_package(Geant4 REQUIRED)
-endif()
+add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cc ${SOURCES})
 
-#----------------------------------------------------------------------------
-# Setup Geant4 include directories and compile definitions
-# Setup include directory for this project
-#
-include(${Geant4_USE_FILE})
-include_directories(${PROJECT_SOURCE_DIR}/include ${INC_ROOT})
-#link_directories($
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
-#----------------------------------------------------------------------------
-# Locate sources and headers for this project
-# NB: headers are included so they will show up in IDEs
-#
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        ${Geant4_LIBRARIES}
+        ROOT::RIO
+        ROOT::Core
+        ROOT::Tree
+)
 
-#----------------------------------------------------------------------------
-# Add the executable, and link it to the Geant4 libraries
-#
-add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cc ${sources} ${headers})
-target_link_libraries(${PROJECT_NAME} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
-#----------------------------------------------------------------------------
-#----------------------------------------------------------------------------
-# Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
-#
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-#
-#----------------------------------------------------------------------------
-ADD_CUSTOM_TARGET(link_target ALL
-                  COMMAND ${CMAKE_COMMAND} -E create_symlink ../macros ./macros)
