@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 {
   CLHEP::HepRandom::createInstance();
 
-  unsigned int seed = time(0) + (int) getpid();
+  unsigned int seed = time(0);
   unsigned int devrandseed = 0;
   FILE *fdrand = fopen("/dev/urandom", "r");
   if( fdrand ){
@@ -60,10 +60,12 @@ int main(int argc, char** argv)
 
   if (ui)  {
    //interactive mode
-   visManager = new G4VisExecutive;
+   visManager = new G4VisExecutive(argc,argv);
    visManager->Initialize();
+   UImanager->ExecuteMacroFile("macros/vis_beam.mac");
    ui->SessionStart();
    delete ui;
+   delete visManager;
   }
   else  {
    //batch mode
