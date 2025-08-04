@@ -206,10 +206,12 @@ void OutputManager::FillVirtualArray( Int_t hitn )
       fVirtual_row[hitn] = (fVirtual_detid-(fNearm+1))/fNharmCol;    // Row
       fVirtual_col[hitn] = (fVirtual_detid-(fNearm+1))%fNharmCol;    // Column
     }
-    else if( fVirtual_detid >= (fNearm+fNharm+1) && fVirtual_detid <= (fNearm+fNhodo+fNharm+1) ) { 
+    else if( fVirtual_detid >= (fNearm+fNharm+1) && fVirtual_detid <= (fNearm+fNhodo+fNharm) ) { 
       fVirtual_det[hitn] = 2;                               // HODO
       fVirtual_row[hitn] = (fVirtual_detid-(fNearm+fNharm+1))/fNhodoCol;     // Row
       fVirtual_col[hitn] = (fVirtual_detid-(fNearm+fNharm+1))%fNhodoCol;     // Column
+    } else {
+      fVirtual_det[hitn] = fVirtual_detid;
     }
 
     fVirtual_Nhits++;
