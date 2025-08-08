@@ -98,6 +98,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double pbwo4_X = 20.*mm; 
   G4double pbwo4_Y = 20.*mm; 
   G4double pbwo4_Z = 200.*mm;
+  double NPSPhi0 = 90*deg;
   
   G4Box* pbwo4_solid = new G4Box("pbwo4_solid", 0.5*pbwo4_X, 0.5*pbwo4_Y, 0.5*pbwo4_Z);
   
@@ -109,8 +110,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double NPS_xprime, NPS_yprime, NPS_zprime;
   char stmp[50];
   
-  for( int ix=0 ; ix < fNPSNrow ; ix++ ) {
-    for( int iy=0 ; iy < fNPSNcol ; iy++ ) {
+  for( int ix=0 ; ix < 3; ix++ ) {
+    for( int iy=0 ; iy < 3; iy++ ) {
     
       sprintf( stmp, "nps%d", SDcount );
       
@@ -120,7 +121,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
       NPS_th = fNPSAngle;
       
-      NPS_ph = 0 + ((360./fNPSNcol) * iy) *deg;
+      NPS_ph = NPSPhi0 + ((360./fNPSNcol) * iy) *deg;
 
       NPS_yprime = NPS_y * std::cos(NPS_th) + NPS_z * std::sin(NPS_th); 
       NPS_zprime = -NPS_y * std::sin(NPS_th) + NPS_z * std::cos(NPS_th); 
@@ -155,7 +156,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double NPSshield_x, NPSshield_y, NPSshield_z, NPSshield_th, NPSshield_ph;
   G4double NPSshield_xprime, NPSshield_yprime, NPSshield_zprime;
   
-  for( int iy=0 ; iy < fNPSNcol ; iy++ ) {
+  for( int iy=0 ; iy < 3; iy++ ) {
     
     sprintf( stmp, "npsshield%d", iy );
     
@@ -165,7 +166,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     NPSshield_th = fNPSAngle;
     
-    NPSshield_ph = 0 + ((360./fNPSNcol) * iy) *deg;
+    NPSshield_ph = NPSPhi0 + ((360./fNPSNcol) * iy) *deg;
     
     NPSshield_yprime = NPSshield_z * std::sin(NPSshield_th); 
     NPSshield_zprime = NPSshield_z * std::cos(NPSshield_th); 
@@ -196,26 +197,21 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   
   G4Box* feabs_solid    = new G4Box("feabs_solid", 0.5*scintabs_X, 0.5*scintabs_Y, 0.5*feabs_Z);
   
-  G4LogicalVolume* scintabs_log = new G4LogicalVolume(scintabs_solid,
-						      fNistManager->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"),
-						      "scintabs_log");
+  G4LogicalVolume* scintabs_log = new G4LogicalVolume(scintabs_solid, fNistManager->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"), "scintabs_log");
   
-  G4LogicalVolume* feabs_log = new G4LogicalVolume(feabs_solid,
-						   fNistManager->FindOrBuildMaterial("G4_Fe"),
-						   "feabs_log");
+  G4LogicalVolume* feabs_log = new G4LogicalVolume(feabs_solid, fNistManager->FindOrBuildMaterial("G4_Fe"), "feabs_log");
   
   for( int iz=0 ; iz < HCALNpairs ; iz++ ) {
-    
     sprintf( stmp, "feabs%d", iz );
-    new G4PVPlacement(0, G4ThreeVector( 0., 0., -scintabs_Z/2 + (iz+0.5)*(10*mm + feabs_Z)  ), 
-		      feabs_log, stmp, scintabs_log, false, 9999 );   
+    new G4PVPlacement(0, G4ThreeVector( 0., 0., -scintabs_Z/2 + (iz+0.5)*(10*mm + feabs_Z)  ), feabs_log, stmp, scintabs_log, false, 9999 );   
   }
   
   G4double HCAL_x, HCAL_y, HCAL_z, HCAL_th, HCAL_ph;
   G4double HCAL_xprime, HCAL_yprime, HCAL_zprime;
+  double HCALPhi0 = 270.0 * deg;
   
-  for( int ix=0 ; ix < fHCALNrow ; ix++ ) {
-    for( int iy=0 ; iy < fHCALNcol ; iy++ ) {
+  for( int ix=0 ; ix < 3; ix++ ) {
+    for( int iy=0 ; iy < 3; iy++ ) {
       
       sprintf( stmp, "hcal%d", SDcount );
       
@@ -225,7 +221,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
       
       HCAL_th = fHCALAngle;
       
-      HCAL_ph = 0 + ((360./fHCALNcol) * iy) *deg;
+      HCAL_ph = HCALPhi0 + ((360./fHCALNcol) * iy) *deg;
       
       HCAL_yprime = HCAL_y * std::cos(HCAL_th) + HCAL_z * std::sin(HCAL_th); 
       HCAL_zprime = -HCAL_y * std::sin(HCAL_th) + HCAL_z * std::cos(HCAL_th); 
@@ -260,8 +256,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double HODO_x, HODO_y, HODO_z, HODO_th, HODO_ph;
   G4double HODO_xprime, HODO_yprime, HODO_zprime;
 
-  for( int ix=0 ; ix < fHodoNrow ; ix++ ) {
-    for( int iy=0 ; iy < fHodoNcol ; iy++ ) {
+  for( int ix=0 ; ix < 3; ix++ ) {
+    for( int iy=0 ; iy < 3; iy++ ) {
       
       sprintf( stmp, "hodo%d", SDcount );
       
@@ -271,7 +267,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
       
       HODO_th = fHCALAngle;
       
-      HODO_ph = 0 + ((360./fHodoNcol) * iy) *deg;
+      HODO_ph = HCALPhi0 + ((360./fHodoNcol) * iy) *deg;
       
       HODO_yprime = HODO_y * std::cos(HODO_th) + HODO_z * std::sin(HODO_th); 
       HODO_zprime = -HODO_y * std::sin(HODO_th) + HODO_z * std::cos(HODO_th); 
@@ -304,8 +300,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   
   G4double HCALshield_x, HCALshield_y, HCALshield_z, HCALshield_th, HCALshield_ph;
   G4double HCALshield_xprime, HCALshield_yprime, HCALshield_zprime;
+
   
-  for( int iy=0 ; iy < fHCALNcol ; iy++ ) {
+  for( int iy=0 ; iy < 3; iy++ ) {
     
     sprintf( stmp, "hcalshield%d", iy );
     
@@ -315,7 +312,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     HCALshield_th = fHCALAngle;
     
-    HCALshield_ph = 0 + ((360./fHCALNcol) * iy) *deg;
+    HCALshield_ph = HCALPhi0 + ((360./fHCALNcol) * iy) *deg;
     
     HCALshield_yprime = HCALshield_z * std::sin(HCALshield_th); 
     HCALshield_zprime = HCALshield_z * std::cos(HCALshield_th); 
@@ -329,6 +326,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     new G4PVPlacement(HCALshield_t3d, HCALshield_log, stmp, fexpHall_log, false, 0);
     
   }
+
+  auto thin_plate = new G4Box("thin_plate",1*m,1*m,1*mm);
+  auto thin_plate_log = new G4LogicalVolume(thin_plate,fNistManager->FindOrBuildMaterial("G4_Galactic"), "thin_plate_log");
+  fDetVol[SDcount] = new G4PVPlacement(G4Translate3D(0,0,100*cm),thin_plate_log,"thin_plate",fexpHall_log,false,SDcount);
     
   //---------------------------------------------------------------------------
   // Set Logical Attributes
@@ -596,491 +597,6 @@ void DetectorConstruction::BuildBeamline()
   
   new G4PVPlacement(0, G4ThreeVector(0., 0., 0.5*TargetWindowThickness), fLogicTarget, "Target_pos", LogicTargetCell, false, 0 ); 
 
-  //---------------------------------------------------------------------------
-  // beamline
-  // window joint
-  //---------------------------------------------------------------------------
-
-//   G4Tubs* sWindowInnerJoint1 = new G4Tubs("WindowInnerJoint1_sol",
-// 					  WindowOuterJoint2OuterRadius,
-// 					  WindowInnerJoint1OuterRadius,
-// 					  0.5*WindowInnerJoint1Thickness,
-// 					  0.,
-// 					  twopi);
-  
-//   G4LogicalVolume* LogicWindowInnerJoint1 = new G4LogicalVolume(sWindowInnerJoint1, BeampipeMaterial, "WindowInnerJoint1_log");
-
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,ChamberOuterRadius + WindowFrameThickness - WindowThickness -WindowInnerJoint2Thickness - 0.5*WindowInnerJoint1Thickness),
-//   		    LogicWindowInnerJoint1,
-//   		    "WindowInnerJoint1_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
-
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sWindowInnerJoint2 = new G4Tubs("WindowInnerJoint2_sol",
-// 					  WindowInnerJoint2InnerRadius,
-// 					  WindowInnerJoint2OuterRadius,
-// 					  0.5*WindowInnerJoint2Thickness,
-// 					  0.,
-// 					  twopi);
-
-//   G4LogicalVolume* LogicWindowInnerJoint2 = new G4LogicalVolume(sWindowInnerJoint2, BeampipeMaterial, "WindowInnerJoint2_log");
-
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,ChamberOuterRadius + WindowFrameThickness - WindowThickness - 0.5*WindowInnerJoint2Thickness),
-//   		    LogicWindowInnerJoint2,
-//   		    "WindowInnerJoint2_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
-  		    
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sWindowOuterJoint2 = new G4Tubs("WindowOuterJoint2_sol",
-// 					  0.,
-// 					  WindowOuterJoint2OuterRadius,
-// 					  0.5*WindowOuterJoint2Thickness,
-// 					  0.,
-// 					  twopi);
-
-//   G4LogicalVolume* LogicWindowOuterJoint2 = new G4LogicalVolume(sWindowOuterJoint2,
-// 								BeampipeMaterial,
-// 								"WindowOuterJoint2_log");
-
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,ChamberOuterRadius + WindowFrameThickness +0.5*WindowOuterJoint2Thickness - WindowOuterJoint2_1Position),
-//   		    LogicWindowOuterJoint2,
-//   		    "WindowOuterJoint2_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
-  		    
-
-//   //---------------------------------------------------------------------------
-//   //vacuum inside the OuterJoint2
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sWindowOuterJoint2Vacuum = new G4Tubs("WindowOuterJoint2Vacuum_sol",
-// 						0.,
-// 						WindowOuterJoint2InnerRadius,
-// 						0.5*WindowOuterJoint2Thickness,
-// 						0.,
-// 						twopi);
-  
-//   G4LogicalVolume* LogicWindowOuterJoint2Vacuum = new G4LogicalVolume(sWindowOuterJoint2Vacuum,
-// 								       VacuumMaterial,
-// 								       "WindowOuterJoint2Vacuum_log");
-
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,0),
-//   		    LogicWindowOuterJoint2Vacuum,
-//   		    "WindowOuterJoint2Vacuum_pos",
-//   		    LogicWindowOuterJoint2,
-//   		    false,
-//   		    0 );
-  		    
-
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sWindowOuterJoint2_1 = new G4Tubs("WindowOuterJoint2_1_sol",
-// 					    WindowOuterJoint2_1InnerRadius,
-// 					    WindowOuterJoint2_1OuterRadius,
-// 					    0.5*WindowOuterJoint2_1Thickness,
-// 					    0.,
-// 					    twopi);
-  
-//   G4LogicalVolume* LogicWindowOuterJoint2_1 = new G4LogicalVolume(sWindowOuterJoint2_1,
-// 								  BeampipeMaterial,
-// 								  "WindowOuterJoint2_1_log");
-
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,ChamberOuterRadius + WindowFrameThickness + 0.5*WindowOuterJoint2_1Thickness),
-//   		    LogicWindowOuterJoint2_1,
-//   		    "WindowOuterJoint2_1_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
-  		    
-//   //---------------------------------------------------------------------------
-
-//   G4RotationMatrix *zPipeRot = new G4RotationMatrix;  
-//   zPipeRot->rotateZ(45*degree);                     
-  
-//   G4Box* sWindowOuterJoint2_2 = new G4Box("WindowOuterJoint2_2_sol",
-// 					  0.5*WindowOuterJoint2_2dx,
-// 					  0.5*WindowOuterJoint2_2dy,
-// 					  0.5*WindowOuterJoint2_2dz);
-
-//   G4LogicalVolume* LogicWindowOuterJoint2_2 = new G4LogicalVolume(sWindowOuterJoint2_2,
-// 								  BeampipeMaterial,
-// 								  "WindowOuterJoint2_2_log");
-
-//   new G4PVPlacement(zPipeRot,
-//   		    G4ThreeVector(0,0,ChamberOuterRadius + WindowFrameThickness + WindowOuterJoint2Thickness - WindowOuterJoint2_1Position + 0.5*WindowOuterJoint2_2dz),
-//   		    LogicWindowOuterJoint2_2,
-//   		    "WindowOuterJoint2_2_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
-  		    
-
-//   //---------------------------------------------------------------------------
-//   //vacuum inside the OuterJoint2_2
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sWindowOuterJoint2_2Vacuum = new G4Tubs("WindowOuterJoint2_2Vacuum_sol",
-// 						  0.,
-// 						  WindowOuterJoint2InnerRadius,
-// 						  0.5*WindowOuterJoint2_2dz,
-// 						  0.,
-// 						  twopi);
-  
-//   G4LogicalVolume* LogicWindowOuterJoint2_2Vacuum = new G4LogicalVolume(sWindowOuterJoint2_2Vacuum,
-// 									 VacuumMaterial,
-// 									 "WindowOuterJoint2_2Vacuum_log");
-
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,0),
-//   		    LogicWindowOuterJoint2_2Vacuum,
-//   		    "WindowOuterJoint2_2Vacuum_pos",
-//   		    LogicWindowOuterJoint2_2,
-//   		    false,
-//   		    0 );
-  		    
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sWindowOuterJoint2_3 = new G4Tubs("WindowOuterJoint2_3_sol",
-// 					    0.,
-// 					    WindowOuterJoint2_3OuterRadius,
-// 					    0.5*WindowOuterJoint2_3Thickness,
-// 					    0.,
-// 					    twopi);
-
-//   G4LogicalVolume* LogicWindowOuterJoint2_3 = new G4LogicalVolume(sWindowOuterJoint2_3,
-// 								   BeampipeMaterial,
-// 								   "WindowOuterJoint2_3_log");
-
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,ChamberOuterRadius + WindowFrameThickness + WindowOuterJoint2Thickness - WindowOuterJoint2_1Position 
-// 				  + WindowOuterJoint2_2dz + 0.5*WindowOuterJoint2_3Thickness),
-//   		    LogicWindowOuterJoint2_3,
-//   		    "WindowOuterJoint2_3_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
-  		    
-
-//   //---------------------------------------------------------------------------
-//   // vacuum inside the OuterJoint2_3
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sWindowOuterJoint2_3Vacuum = new G4Tubs("WindowOuterJoint2_3Vacuum_sol",
-// 						  0.,
-// 						  WindowOuterJoint2_3InnerRadius,
-// 						  0.5*WindowOuterJoint2_3Thickness,
-// 						  0.,
-// 						  twopi);
-
-//   G4LogicalVolume* LogicWindowOuterJoint2_3Vacuum = new G4LogicalVolume(sWindowOuterJoint2_3Vacuum,
-// 									 VacuumMaterial,
-// 									 "WindowOuterJoint2_3Vacuum_log");
-  
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,0),
-//   		    LogicWindowOuterJoint2_3Vacuum,
-//   		    "WindowOuterJoint2_3Vacuum_pos",
-//   		    LogicWindowOuterJoint2_3,
-//   		    false,
-//   		    0 );
-  		    
-//   //---------------------------------------------------------------------------
-  
-//   G4Trd* sBeampipe1 = new G4Trd("Beampipe1_sol",
-// 				0.5*Beampipe1Outerdx1,
-// 				0.5*Beampipe1Outerdx2,
-// 				0.5*Beampipe1Outerdy1,
-// 				0.5*Beampipe1Outerdy2,
-// 				0.5*Beampipe1Length);
-  
-//   G4LogicalVolume* LogicBeampipe1 = new G4LogicalVolume(sBeampipe1,
-// 							BeampipeMaterial,
-// 							"Beampipe1_log");
-  
-//   new G4PVPlacement(zPipeRot,
-//   		    G4ThreeVector(0,0,ChamberOuterRadius + WindowFrameThickness + WindowOuterJoint2Thickness - WindowOuterJoint2_1Position 
-// 				  + WindowOuterJoint2_2dz  + 0.5*Beampipe1Length),
-//   		    LogicBeampipe1,
-//   		    "Beampipe1_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
-  		    
-  
-//   //---------------------------------------------------------------------------
-  
-//   G4Trd* sBeampipe1Vacuum = new G4Trd("Beampipe1Vacuum_sol",
-// 				      0.5*Beampipe1Innerdx1,
-// 				      0.5*Beampipe1Innerdx2,
-// 				      0.5*Beampipe1Innerdy1,
-// 				      0.5*Beampipe1Innerdy2,
-// 				      0.5*Beampipe1Length);
-  
-//   G4LogicalVolume* LogicBeampipe1Vacuum = new G4LogicalVolume(sBeampipe1Vacuum,
-// 							       VacuumMaterial,
-// 							       "Beampipe1Vacuum_log");
-  
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,0),
-//   		    LogicBeampipe1Vacuum,
-//   		    "Beampipe1Vacuum_pos",
-//   		    LogicBeampipe1,
-//   		    false,
-//   		    0 );
-  		    
-
-//   //---------------------------------------------------------------------------
-//   //Beampipe2
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sBeampipe2 = new G4Tubs("Beampipe_sol",
-// 				  0.,
-// 				  Beampipe2OuterRadius,
-// 				  0.5*Beampipe2Length,
-// 				  0.,
-// 				  twopi);
-
-//   G4LogicalVolume* LogicBeampipe2 = new G4LogicalVolume(sBeampipe2,
-// 							BeampipeMaterial,
-// 							"Beampipe2_log");
-
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,ChamberOuterRadius + WindowFrameThickness + WindowOuterJoint2Thickness - WindowOuterJoint2_1Position 
-// 				  + WindowOuterJoint2_2dz + Beampipe1Length + 0.5*Beampipe2Length),
-//   		    LogicBeampipe2,
-//   		    "Beampipe2_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
-  		    
-//   //---------------------------------------------------------------------------
-//   // vacuum inside the Beampipe2
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sBeampipe2Vacuum = new G4Tubs("Beampipe2Vacuum_sol",
-// 					0.,
-// 					Beampipe2InnerRadius,
-// 					0.5*Beampipe2Length,
-// 					0.,
-// 					twopi);
-
-//   G4LogicalVolume* LogicBeampipe2Vacuum = new G4LogicalVolume(sBeampipe2Vacuum,
-// 							       VacuumMaterial,
-// 							       "Beampipe2Vacuum_log");
-
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,0),
-//   		    LogicBeampipe2Vacuum,
-//   		    "Beampipe2Vacuum_pos",
-//   		    LogicBeampipe2,
-//   		    false,
-//   		    0 );
-  		    
-
-//   //---------------------------------------------------------------------------
-//   // Beampipe2 front cover
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sBeampipe2FrontCell_before_sub = new G4Tubs("Beampipe2FrontCell_before_sub_sol",
-// 						      0.,
-// 						      Beampipe2OuterRadius,
-// 						      0.5*Beampipe2FrontCellThickness,
-// 						      0.,
-// 						      twopi);
-  
-//   G4SubtractionSolid* sBeampipe2FrontCell = new G4SubtractionSolid("Beampipe2FrontCell_sol",
-// 								   sBeampipe2FrontCell_before_sub,
-// 								   sBeampipe1,
-// 								   zPipeRot,
-// 								   G4ThreeVector(0, 0, -0.5*Beampipe1Length + 0.5*Beampipe2FrontCellThickness));
-
-//   G4LogicalVolume* LogicBeampipe2FrontCell = new G4LogicalVolume(sBeampipe2FrontCell,
-// 								 BeampipeMaterial,
-// 								 "Beampipe2FrontCell_log");
-
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,ChamberOuterRadius + WindowFrameThickness + WindowOuterJoint2Thickness - WindowOuterJoint2_1Position 
-// 				  + WindowOuterJoint2_2dz + Beampipe1Length - 0.5*Beampipe2FrontCellThickness),
-//   		    LogicBeampipe2FrontCell,
-//   		    "Beampipe2FrontCell_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
-  		    
-//   //---------------------------------------------------------------------------
-//   // Beampipe3
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sBeampipe3 = new G4Tubs("Beampipe_sol",
-// 				  0.,
-// 				  Beampipe3OuterRadius,
-// 				  0.5*Beampipe3Length,
-// 				  0.,
-// 				  twopi);
-  
-//   G4LogicalVolume* LogicBeampipe3 = new G4LogicalVolume(sBeampipe3,
-// 							 BeampipeMaterial,
-// 							 "Beampipe3_log");
-
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,ChamberOuterRadius + WindowFrameThickness + WindowOuterJoint2Thickness - WindowOuterJoint2_1Position 
-// 				  + WindowOuterJoint2_2dz  + Beampipe1Length + Beampipe2Length + 0.5*Beampipe3Length),
-//   		    LogicBeampipe3,
-//   		    "Beampipe3_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
-  		    
-//   //---------------------------------------------------------------------------
-//   //vacuum inside the Beampipe3
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sBeampipe3Vacuum = new G4Tubs("Beampipe3Vacuum_sol",
-// 					0.,
-// 					Beampipe3InnerRadius,
-// 					0.5*Beampipe3Length,
-// 					0.,
-// 					twopi);
-
-//   G4LogicalVolume* LogicBeampipe3Vacuum = new G4LogicalVolume(sBeampipe3Vacuum,
-// 							       VacuumMaterial,
-// 							       "Beampipe3Vacuum_log");
-
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,0),
-//   		    LogicBeampipe3Vacuum,
-//   		    "Beampipe3Vacuum_pos",
-//   		    LogicBeampipe3,
-//   		    false,
-//   		    0 );
-  		    
-//   //---------------------------------------------------------------------------
-  
-//   G4Tubs* sBeampipe3FrontCell = new G4Tubs("Beampipe3FrontCell_before_sub_sol",
-// 					   Beampipe2OuterRadius,
-// 					   Beampipe3OuterRadius,
-// 					   0.5*Beampipe3FrontCellThickness,
-// 					   0.,
-// 					   twopi);
-  
-//   G4LogicalVolume* LogicBeampipe3FrontCell = new G4LogicalVolume(sBeampipe3FrontCell,
-// 								  BeampipeMaterial,
-// 								  "Beampipe3FrontCell_log");
-  
-//   new G4PVPlacement(0,
-//   		    G4ThreeVector(0,0,ChamberOuterRadius + WindowFrameThickness + WindowOuterJoint2Thickness - WindowOuterJoint2_1Position 
-// 				  + WindowOuterJoint2_2dz + Beampipe1Length + Beampipe2Length - 0.5*Beampipe3FrontCellThickness),
-//   		    LogicBeampipe3FrontCell,
-//   		    "Beampipe3FrontCell_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
-  		    
-  //---------------------------------------------------------------------------
-  // Al window for the chamber
-  //---------------------------------------------------------------------------
-
-//   G4Tubs* sWindow = new G4Tubs("Window_sol",
-// 			       ChamberOuterRadius + WindowFrameThickness,//1.25inch is the thickness of the window frame
-// 			       ChamberOuterRadius + WindowFrameThickness + WindowThickness,
-// 			       0.5*WindowHight,//actual size is 19*inch however, they are covered by the window clamp
-// 			       WindowFrameStartTheta,//to match the center of the window
-// 			       WindowFrameDeltaTheta);//total 133 deg.
-
-//   G4RotationMatrix *yRot = new G4RotationMatrix; 
-//   yRot->rotateY(-90*degree);                    
-
-//   G4SubtractionSolid* sWindow_sub_InnerJoint2 = new G4SubtractionSolid("Window_sub_InnerJoint2",
-//   								       sWindow,
-//   								       sWindowInnerJoint2,
-//   								       yRot,
-//   								       G4ThreeVector(ChamberOuterRadius + WindowFrameThickness 
-// 										     - WindowThickness - 0.5*WindowInnerJoint2Thickness, 0, 0));
-
-//   G4SubtractionSolid* sWindow_sub_InnerJoint2_sub_OuterJoint2 = new G4SubtractionSolid("Window_sub_InnerJoint2_sub_OutherJoint2",
-//   										       sWindow_sub_InnerJoint2,
-//   										       sWindowOuterJoint2,
-//   										       yRot,
-//   										       G4ThreeVector(ChamberOuterRadius + WindowFrameThickness 
-// 												     +0.5*WindowOuterJoint2Thickness - WindowOuterJoint2_1Position, 0, 0));
-
-//   G4SubtractionSolid* sWindow_sub_InnerJoint2_sub_OuterJoint2_sub_OuterJoint2_1 = new G4SubtractionSolid("Window_sub_InnerJoint2_sub_OutherJoint2",
-// 													 sWindow_sub_InnerJoint2_sub_OuterJoint2,
-// 													 sWindowOuterJoint2_1,
-// 													 yRot,
-// 													 G4ThreeVector(ChamberOuterRadius + WindowFrameThickness 
-// 														       + 0.5*WindowOuterJoint2_1Thickness, 0, 0));
-
-//   G4LogicalVolume*  LogicChamberWindow = new G4LogicalVolume(sWindow_sub_InnerJoint2_sub_OuterJoint2_sub_OuterJoint2_1,
-// 							     WindowMaterial,
-// 							     "Window_log");
-  
-//   new G4PVPlacement(zxWindowRot,
-//   		    G4ThreeVector(),
-//   		    LogicChamberWindow,
-//   		    "Window_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
-  		    
-
-//   //---------------------------------------------------------------------------
-//   //extra detailed vaccum in the chamber
-//   //---------------------------------------------------------------------------
-
-//   G4Tubs* sChamberWindowVacuum = new G4Tubs("ChamberWindowVacuum_sol",
-// 					    ChamberInnerRadius,
-// 					    ChamberOuterRadius+WindowFrameThickness,
-// 					    0.5*WindowSubHight,
-// 					    WindowStartTheta,
-// 					    WindowDeltaTheta);
-  
-//   G4SubtractionSolid* sChamberWindowVacuum_sub_InnerJoint2 = new G4SubtractionSolid("ChamberWindowVacuum_sub_InnerJoint2",
-// 										    sChamberWindowVacuum,
-// 										    sWindowInnerJoint2,
-// 										    yRot,
-// 										    G4ThreeVector(ChamberOuterRadius + WindowFrameThickness - WindowThickness 
-// 												  - 0.5*WindowInnerJoint2Thickness, 0, 0));
-
-//   G4SubtractionSolid* sChamberWindowVacuum_sub_InnerJoint2_sub_OuterJoint2 = new G4SubtractionSolid("ChamberWindowVacuum_sub_InnerJoint2_sub_OutherJoint2",
-// 												    sChamberWindowVacuum_sub_InnerJoint2,
-// 												    sWindowOuterJoint2,
-// 												    yRot,
-// 												    G4ThreeVector(ChamberOuterRadius + WindowFrameThickness 
-// 														  + 0.5*WindowOuterJoint2Thickness - WindowOuterJoint2_1Position, 0, 0));
-
-//   G4SubtractionSolid* sChamberWindowVacuum_sub_InnerJoint2_sub_OuterJoint2_sub_InnerJoint1 = new G4SubtractionSolid("ChamberWindowVacuum_sub_InnerJoint2_sub_OutherJoint2_sub_InnerJoint1",
-// 														    sChamberWindowVacuum_sub_InnerJoint2_sub_OuterJoint2,
-// 														    sWindowInnerJoint1,
-// 														    yRot,
-// 														    G4ThreeVector(ChamberOuterRadius + WindowFrameThickness - WindowThickness 
-// 																  - WindowInnerJoint2Thickness - 0.5*WindowInnerJoint1Thickness, 0, 0));
-
-
-
-//   G4LogicalVolume*  LogicInnerChamber2 = new G4LogicalVolume(sChamberWindowVacuum_sub_InnerJoint2_sub_OuterJoint2_sub_InnerJoint1,//sChamberWindowVacuum,
-// 							     VacuumMaterial,
-// 							     "ChamberWindowVacuum_log");
-  
-//   new G4PVPlacement(zxWindowRot,
-//   		    G4ThreeVector(),
-//   		    LogicInnerChamber2,
-//   		    "ChamberWindowVacuum_pos",
-//   		    fexpHall_log,
-//   		    false,
-//   		    0 );
   
 }
 
