@@ -62,12 +62,12 @@ private:
   TFile*                fROOTfile;
   TTree*                fROOTtree;
 
-  const G4int           fNearm    = 1200;
-  const G4int           fNearmCol = 240;
-  const G4int           fNhodo    = 7200;
-  const G4int           fNhodoCol = 480;
-  const G4int           fNharm    = 288;
-  const G4int           fNharmCol  = 96;
+  const G4int           fNearm    = 25;
+  const G4int           fNearmCol = 5;
+  const G4int           fNhodo    = 225;
+  const G4int           fNhodoCol = 15;
+  const G4int           fNharm    = 9;
+  const G4int           fNharmCol = 3;
 
   // Event
   Double_t               fEvent_weight;

@@ -56,19 +56,16 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   G4int              fBeamline;
 
   static const G4int fNPSNrow  = 5;
-  static const G4int fNPSNcol  = 240;
+  static const G4int fNPSNcol  = 5;
 
   static const G4int fHCALNrow = 3;
-  static const G4int fHCALNcol = 96;
+  static const G4int fHCALNcol = 3;
 
   static const G4int fHodoNrow = 15;
-  static const G4int fHodoNcol = 480;
+  static const G4int fHodoNcol = 15;
   
 
-  static const G4int fNSD      = ( fNPSNrow*fNPSNcol
-				   + fHodoNrow*fHodoNcol
-				   + fHCALNrow*fHCALNcol
-				   + 1 ); 
+  static const G4int fNSD = ( fNPSNrow*fNPSNcol + fHodoNrow*fHodoNcol + fHCALNrow*fHCALNcol + 1 ); 
 
   G4VPhysicalVolume* fExpHall;
   G4VPhysicalVolume* fDetVol[fNSD];

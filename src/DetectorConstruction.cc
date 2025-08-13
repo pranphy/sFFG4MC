@@ -69,16 +69,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Create experimental hall
   //---------------------------------------------------------------------------
   
-  G4Box* expHall_box           = new G4Box("expHall_box",
-					   10.75 *m, 10.75 *m, 10.75 *m );
-  
-
-  fexpHall_log = new G4LogicalVolume(expHall_box,
-				     fNistManager->FindOrBuildMaterial("G4_AIR"),  
-				     "expHall_log", 0, 0, 0);
-  
-  fExpHall                     = new G4PVPlacement(0, G4ThreeVector(),
-						   fexpHall_log, "expHall", 0, false, 0);
+  G4Box* expHall_box = new G4Box("expHall_box", 10.75 *m, 10.75 *m, 10.75 *m );
+  fexpHall_log = new G4LogicalVolume(expHall_box, fNistManager->FindOrBuildMaterial("G4_AIR"),  "expHall_log", 0, 0, 0);
+  fExpHall = new G4PVPlacement(0, G4ThreeVector(), fexpHall_log, "expHall", 0, false, 0);
 
   //---------------------------------------------------------------------------
   // Create scattering chamber, target and exit beamline
@@ -102,16 +95,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   
   G4Box* pbwo4_solid = new G4Box("pbwo4_solid", 0.5*pbwo4_X, 0.5*pbwo4_Y, 0.5*pbwo4_Z);
   
-  G4LogicalVolume* pbwo4_log = new G4LogicalVolume(pbwo4_solid,
-						   fNistManager->FindOrBuildMaterial("G4_PbWO4"),
-						   "pbwo4_log");
+  G4LogicalVolume* pbwo4_log = new G4LogicalVolume(pbwo4_solid, fNistManager->FindOrBuildMaterial("G4_PbWO4"), "pbwo4_log");
   
   G4double NPS_x, NPS_y, NPS_z, NPS_th, NPS_ph;
   G4double NPS_xprime, NPS_yprime, NPS_zprime;
   char stmp[50];
   
-  for( int ix=0 ; ix < 3; ix++ ) {
-    for( int iy=0 ; iy < 3; iy++ ) {
+  for( int ix=0 ; ix < fNPSNrow ; ix++ ) {
+    for( int iy=0 ; iy < fNPSNcol ; iy++ ) {
     
       sprintf( stmp, "nps%d", SDcount );
       
@@ -121,7 +112,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
       NPS_th = fNPSAngle;
       
-      NPS_ph = NPSPhi0 + ((360./fNPSNcol) * iy) *deg;
+      NPS_ph = NPSPhi0 + ((360./240) * iy) *deg;
 
       NPS_yprime = NPS_y * std::cos(NPS_th) + NPS_z * std::sin(NPS_th); 
       NPS_zprime = -NPS_y * std::sin(NPS_th) + NPS_z * std::cos(NPS_th); 
@@ -133,6 +124,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	* G4RotateZ3D(NPS_ph).inverse() * G4RotateX3D(NPS_th).inverse();
       
       fDetVol[SDcount] = new G4PVPlacement(NPS_t3d, pbwo4_log, stmp, fexpHall_log, false, SDcount);
+      std::cout<<"SDcount = "<<SDcount<<" "<<stmp<<std::endl;
       
       SDcount++;
     }
@@ -156,7 +148,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double NPSshield_x, NPSshield_y, NPSshield_z, NPSshield_th, NPSshield_ph;
   G4double NPSshield_xprime, NPSshield_yprime, NPSshield_zprime;
   
-  for( int iy=0 ; iy < 3; iy++ ) {
+  for( int iy=0 ; iy < fNPSNcol ; iy++ ) {
     
     sprintf( stmp, "npsshield%d", iy );
     
@@ -166,7 +158,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     NPSshield_th = fNPSAngle;
     
-    NPSshield_ph = NPSPhi0 + ((360./fNPSNcol) * iy) *deg;
+    NPSshield_ph = NPSPhi0 + ((360./240) * iy) *deg;
     
     NPSshield_yprime = NPSshield_z * std::sin(NPSshield_th); 
     NPSshield_zprime = NPSshield_z * std::cos(NPSshield_th); 
@@ -210,8 +202,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double HCAL_xprime, HCAL_yprime, HCAL_zprime;
   double HCALPhi0 = 270.0 * deg;
   
-  for( int ix=0 ; ix < 3; ix++ ) {
-    for( int iy=0 ; iy < 3; iy++ ) {
+  for( int ix=0 ; ix < fHCALNrow ; ix++ ) {
+    for( int iy=0 ; iy < fHCALNcol ; iy++ ) {
       
       sprintf( stmp, "hcal%d", SDcount );
       
@@ -221,7 +213,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
       
       HCAL_th = fHCALAngle;
       
-      HCAL_ph = HCALPhi0 + ((360./fHCALNcol) * iy) *deg;
+      HCAL_ph = HCALPhi0 + ((360./96) * iy) *deg;
       
       HCAL_yprime = HCAL_y * std::cos(HCAL_th) + HCAL_z * std::sin(HCAL_th); 
       HCAL_zprime = -HCAL_y * std::sin(HCAL_th) + HCAL_z * std::cos(HCAL_th); 
@@ -233,6 +225,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	* G4RotateZ3D(HCAL_ph).inverse() * G4RotateX3D(HCAL_th).inverse();
       
       fDetVol[SDcount] = new G4PVPlacement(HCAL_t3d, scintabs_log, stmp, fexpHall_log, false, SDcount);
+      std::cout<<"SDcount = "<<SDcount<<" "<<stmp<<std::endl;
       
       SDcount++;
     }
@@ -256,8 +249,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double HODO_x, HODO_y, HODO_z, HODO_th, HODO_ph;
   G4double HODO_xprime, HODO_yprime, HODO_zprime;
 
-  for( int ix=0 ; ix < 3; ix++ ) {
-    for( int iy=0 ; iy < 3; iy++ ) {
+  for( int ix=0 ; ix < fHodoNrow ; ix++ ) {
+    for( int iy=0 ; iy < fHodoNcol ; iy++ ) {
       
       sprintf( stmp, "hodo%d", SDcount );
       
@@ -267,7 +260,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
       
       HODO_th = fHCALAngle;
       
-      HODO_ph = HCALPhi0 + ((360./fHodoNcol) * iy) *deg;
+      HODO_ph = HCALPhi0 + ((360./480) * iy) *deg;
       
       HODO_yprime = HODO_y * std::cos(HODO_th) + HODO_z * std::sin(HODO_th); 
       HODO_zprime = -HODO_y * std::sin(HODO_th) + HODO_z * std::cos(HODO_th); 
@@ -279,6 +272,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	* G4RotateZ3D(HODO_ph).inverse() * G4RotateX3D(HODO_th).inverse();
       
       fDetVol[SDcount] = new G4PVPlacement(HODO_t3d, hodoscint_log, stmp, fexpHall_log, false, SDcount);
+      std::cout<<"SDcount = "<<SDcount<<" "<<stmp<<std::endl;
       
       SDcount++;
     }
@@ -300,9 +294,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   
   G4double HCALshield_x, HCALshield_y, HCALshield_z, HCALshield_th, HCALshield_ph;
   G4double HCALshield_xprime, HCALshield_yprime, HCALshield_zprime;
-
   
-  for( int iy=0 ; iy < 3; iy++ ) {
+  for( int iy=0 ; iy < fHCALNcol ; iy++ ) {
     
     sprintf( stmp, "hcalshield%d", iy );
     
@@ -312,7 +305,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     HCALshield_th = fHCALAngle;
     
-    HCALshield_ph = HCALPhi0 + ((360./fHCALNcol) * iy) *deg;
+    HCALshield_ph = HCALPhi0 + ((360./96) * iy) *deg;
     
     HCALshield_yprime = HCALshield_z * std::sin(HCALshield_th); 
     HCALshield_zprime = HCALshield_z * std::cos(HCALshield_th); 
@@ -330,6 +323,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   auto thin_plate = new G4Box("thin_plate",1*m,1*m,1*mm);
   auto thin_plate_log = new G4LogicalVolume(thin_plate,fNistManager->FindOrBuildMaterial("G4_Galactic"), "thin_plate_log");
   fDetVol[SDcount] = new G4PVPlacement(G4Translate3D(0,0,100*cm),thin_plate_log,"thin_plate",fexpHall_log,false,SDcount);
+  std::cout<<"SDcount = "<<SDcount<<" is thin_plate_log "<<std::endl;
     
   //---------------------------------------------------------------------------
   // Set Logical Attributes
